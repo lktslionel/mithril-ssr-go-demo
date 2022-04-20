@@ -8,4 +8,8 @@ require (
 	github.com/tonglil/gokitlogr v0.0.0-20220413074158-256cc1d17460
 )
 
-require github.com/go-logfmt/logfmt v0.5.1 // indirect
+require (
+	github.com/dop251/goja v0.0.0-20211022113120-dc8c55024d06
+	github.com/dop251/goja_nodejs v0.0.0-20211022123610-8dd9abb0616d
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
+)

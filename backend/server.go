@@ -2,49 +2,37 @@ package main
 
 import (
 	"fmt"
-	"html"
-	"net/http"
-	"os"
-
-	kitlog "github.com/go-kit/log"
-	"github.com/go-logr/logr"
-	"github.com/tonglil/gokitlogr"
 
 	"github.com/dop251/goja"
+	"github.com/dop251/goja_nodejs/console"
 	"github.com/dop251/goja_nodejs/require"
 )
 
 func main() {
-	kl := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stderr))
-	kl = kitlog.With(kl, "ts", kitlog.DefaultTimestampUTC, "caller", kitlog.Caller(5))
 
-	gokitlogr.NameFieldKey = "logger"
-	gokitlogr.NameSeparator = "/"
-	var log logr.Logger = gokitlogr.New(&kl)
+	globalFolders := []string{
+		// ".",
+		"node_modules",
+	}
 
-	log = log.WithName("server")
+	registry := require.NewRegistry(require.WithGlobalFolders(globalFolders...))
 
-	registry := new(require.Registry) // this can be shared by multiple runtimes
+	vm := goja.New()
+	req := registry.Enable(vm)
+	console.Enable(vm)
 
-	runtime := goja.New()
-	req := registry.Enable(runtime)
+	view, err := vm.RunString(`
 
-	runtime.RunString(`
-    var m = require("m.js");
-    m.test();
+		window = document =	requestAnimationFrame = undefined
+
+    var m = require("render.js");
+
+    console.log(m.AppView);
     `)
 
-	m, err := req.Require("m.js")
+	fmt.Println(view, err)
+
+	m, err := req.Require("render.js")
 	_, _ = m, err
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
-
-	http.HandleFunc("/api/v1/data", func(w http.ResponseWriter, r *http.Request) {
-
-	})
-
-	log.Error(http.ListenAndServe(":8080", nil), "", nil)
 
 }
