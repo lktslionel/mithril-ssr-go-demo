@@ -10,29 +10,37 @@ import (
 
 func main() {
 
-	globalFolders := []string{
-		// ".",
-		"node_modules",
-	}
-
-	registry := require.NewRegistry(require.WithGlobalFolders(globalFolders...))
+	registry := require.NewRegistry()
 
 	vm := goja.New()
-	req := registry.Enable(vm)
+	required := registry.Enable(vm)
 	console.Enable(vm)
 
-	view, err := vm.RunString(`
+	const SCRIPT = `
+	var m = require("./render.js") 
+	
+	console.log(m)
+	`
 
-		window = document =	requestAnimationFrame = undefined
+	mod, _ := required.Require("./render.js")
+	fmt.Println(mod)
 
-    var m = require("render.js");
+	required.Require("mithril")
 
-    console.log(m.AppView);
-    `)
+	v, err := vm.RunString(SCRIPT)
+	if err != nil {
+		fmt.Println("Error: %v", err)
+	}
+	
+	fmt.Println(v, required)
 
-	fmt.Println(view, err)
+	// mod, err := req.Require("render.js")
+	// if err != nil {
+		// fmt.Errorf("Failed")
+	// }
+// 
+	// fmt.Println(mod)
+	
 
-	m, err := req.Require("render.js")
-	_, _ = m, err
 
 }

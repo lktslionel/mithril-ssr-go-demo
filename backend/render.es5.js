@@ -1,3 +1,7 @@
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 function __swcpack_require__(mod) {
     function interop(obj) {
         if (obj && obj.__esModule) {
@@ -5,7 +9,7 @@ function __swcpack_require__(mod) {
         } else {
             var newObj = {};
             if (obj != null) {
-                for(var key in obj){
+                for (var key in obj) {
                     if (Object.prototype.hasOwnProperty.call(obj, key)) {
                         var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};
                         if (desc.get || desc.set) {
@@ -31,8 +35,9 @@ function __swcpack_require__(mod) {
     cache = interop(module.exports);
     return cache;
 }
-var load = __swcpack_require__.bind(void 0, function(module, exports) {
+var load = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     function Vnode(tag, key, attrs, children, text, dom) {
         return {
             tag: tag,
@@ -47,70 +52,76 @@ var load = __swcpack_require__.bind(void 0, function(module, exports) {
             instance: undefined
         };
     }
-    Vnode.normalize = function(node) {
+    Vnode.normalize = function (node) {
         if (Array.isArray(node)) return Vnode("[", undefined, undefined, Vnode.normalizeChildren(node), undefined, undefined);
         if (node == null || typeof node === "boolean") return null;
-        if (typeof node === "object") return node;
+        if ((typeof node === "undefined" ? "undefined" : _typeof(node)) === "object") return node;
         return Vnode("#", undefined, undefined, String(node), undefined, undefined);
     };
-    Vnode.normalizeChildren = function(input) {
+    Vnode.normalizeChildren = function (input) {
         var children = [];
         if (input.length) {
             var isKeyed = input[0] != null && input[0].key != null;
-            for(var i = 1; i < input.length; i++){
+            for (var i = 1; i < input.length; i++) {
                 if ((input[i] != null && input[i].key != null) !== isKeyed) throw new TypeError("Vnodes must either always have keys or never have keys!");
             }
-            for(var i = 0; i < input.length; i++)children[i] = Vnode.normalize(input[i]);
+            for (var i = 0; i < input.length; i++) {
+                children[i] = Vnode.normalize(input[i]);
+            }
         }
         return children;
     };
     module.exports = Vnode;
 });
-var load1 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load1 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
-    module.exports = function() {
-        var attrs = arguments[this], start = this + 1, children;
-        if (attrs == null) attrs = {};
-        else if (typeof attrs !== "object" || attrs.tag != null || Array.isArray(attrs)) {
+    module.exports = function () {
+        var attrs = arguments[this],
+            start = this + 1,
+            children;
+        if (attrs == null) attrs = {};else if ((typeof attrs === "undefined" ? "undefined" : _typeof(attrs)) !== "object" || attrs.tag != null || Array.isArray(attrs)) {
             attrs = {};
             start = this;
         }
         if (arguments.length === start + 1) {
             children = arguments[start];
-            if (!Array.isArray(children)) children = [
-                children
-            ];
+            if (!Array.isArray(children)) children = [children];
         } else {
             children = [];
-            while(start < arguments.length)children.push(arguments[start++]);
+            while (start < arguments.length) {
+                children.push(arguments[start++]);
+            }
         }
         return Vnode("", attrs.key, attrs, children);
     };
 });
-var load2 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load2 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
     var hyperscriptVnode = load1();
     var selectorParser = /(?:(^|#|\.)([^#\.\[\]]+))|(\[(.+?)(?:\s*=\s*("|'|)((?:\\["'\]]|.)*?)\5)?\])/g;
     var selectorCache = {};
     var hasOwn = {}.hasOwnProperty;
     function isEmpty(object) {
-        for(var key in object)if (hasOwn.call(object, key)) return false;
-        return true;
+        for (var key in object) {
+            if (hasOwn.call(object, key)) return false;
+        }return true;
     }
     function compileSelector(selector) {
-        var match, tag = "div", classes = [], attrs = {};
-        while(match = selectorParser.exec(selector)){
-            var type = match[1], value = match[2];
-            if (type === "" && value !== "") tag = value;
-            else if (type === "#") attrs.id = value;
-            else if (type === ".") classes.push(value);
-            else if (match[3][0] === "[") {
+        var match,
+            tag = "div",
+            classes = [],
+            attrs = {};
+        while (match = selectorParser.exec(selector)) {
+            var type = match[1],
+                value = match[2];
+            if (type === "" && value !== "") tag = value;else if (type === "#") attrs.id = value;else if (type === ".") classes.push(value);else if (match[3][0] === "[") {
                 var attrValue = match[6];
                 if (attrValue) attrValue = attrValue.replace(/\\(["'])/g, "$1").replace(/\\\\/g, "\\");
-                if (match[4] === "class") classes.push(attrValue);
-                else attrs[match[4]] = attrValue === "" ? attrValue : attrValue || true;
+                if (match[4] === "class") classes.push(attrValue);else attrs[match[4]] = attrValue === "" ? attrValue : attrValue || true;
             }
         }
         if (classes.length > 0) attrs.className = classes.join(" ");
@@ -129,18 +140,20 @@ var load2 = __swcpack_require__.bind(void 0, function(module, exports) {
         vnode.children = undefined;
         if (!isEmpty(state.attrs) && !isEmpty(attrs)) {
             var newAttrs = {};
-            for(var key in attrs)if (hasOwn.call(attrs, key)) newAttrs[key] = attrs[key];
-            attrs = newAttrs;
+            for (var key in attrs) {
+                if (hasOwn.call(attrs, key)) newAttrs[key] = attrs[key];
+            }attrs = newAttrs;
         }
-        for(var key in state.attrs)if (hasOwn.call(state.attrs, key) && key !== "className" && !hasOwn.call(attrs, key)) attrs[key] = state.attrs[key];
-        if (className != null || state.attrs.className != null) attrs.className = className != null ? state.attrs.className != null ? String(state.attrs.className) + " " + String(className) : className : state.attrs.className != null ? state.attrs.className : null;
+        for (var key in state.attrs) {
+            if (hasOwn.call(state.attrs, key) && key !== "className" && !hasOwn.call(attrs, key)) attrs[key] = state.attrs[key];
+        }if (className != null || state.attrs.className != null) attrs.className = className != null ? state.attrs.className != null ? String(state.attrs.className) + " " + String(className) : className : state.attrs.className != null ? state.attrs.className : null;
         if (hasClass) attrs.class = null;
-        for(var key in attrs)if (hasOwn.call(attrs, key) && key !== "key") {
-            vnode.attrs = attrs;
-            break;
-        }
-        if (Array.isArray(children) && children.length === 1 && children[0] != null && children[0].tag === "#") vnode.text = children[0].children;
-        else vnode.children = children;
+        for (var key in attrs) {
+            if (hasOwn.call(attrs, key) && key !== "key") {
+                vnode.attrs = attrs;
+                break;
+            }
+        }if (Array.isArray(children) && children.length === 1 && children[0] != null && children[0].tag === "#") vnode.text = children[0].children;else vnode.children = children;
         return vnode;
     }
     function hyperscript(selector) {
@@ -155,38 +168,46 @@ var load2 = __swcpack_require__.bind(void 0, function(module, exports) {
     }
     module.exports = hyperscript;
 });
-var load3 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load3 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
-    module.exports = function(html) {
-        if (html == null) html = "";
-        return Vnode("<", undefined, undefined, html, undefined, undefined);
+    module.exports = function (html1) {
+        if (html1 == null) html1 = "";
+        return Vnode("<", undefined, undefined, html1, undefined, undefined);
     };
 });
-var load4 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load4 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
     var hyperscriptVnode = load1();
-    module.exports = function() {
+    module.exports = function () {
         var vnode = hyperscriptVnode.apply(0, arguments);
         vnode.tag = "[";
         vnode.children = Vnode.normalizeChildren(vnode.children);
         return vnode;
     };
 });
-var load5 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load5 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var hyperscript = load2();
     hyperscript.trust = load3();
     hyperscript.fragment = load4();
     module.exports = hyperscript;
 });
-var load6 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load6 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
-    var PromisePolyfill = function(executor) {
+
+    var PromisePolyfill = function PromisePolyfill(executor) {
         if (!(this instanceof PromisePolyfill)) throw new Error("Promise must be called with `new`");
         if (typeof executor !== "function") throw new TypeError("executor must be a function");
-        var self = this, resolvers = [], rejectors = [], resolveCurrent = handler(resolvers, true), rejectCurrent = handler(rejectors, false);
+        var self = this,
+            resolvers = [],
+            rejectors = [],
+            resolveCurrent = handler(resolvers, true),
+            rejectCurrent = handler(rejectors, false);
         var instance = self._instance = {
             resolvers: resolvers,
             rejectors: rejectors
@@ -196,15 +217,16 @@ var load6 = __swcpack_require__.bind(void 0, function(module, exports) {
             return function execute(value) {
                 var then;
                 try {
-                    if (shouldAbsorb && value != null && (typeof value === "object" || typeof value === "function") && typeof (then = value.then) === "function") {
+                    if (shouldAbsorb && value != null && ((typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" || typeof value === "function") && typeof (then = value.then) === "function") {
                         if (value === self) throw new TypeError("Promise can't be resolved w/ itself");
                         executeOnce(then.bind(value));
-                    } else callAsync(function() {
+                    } else callAsync(function () {
                         if (!shouldAbsorb && list.length === 0) console.error("Possible unhandled promise rejection:", value);
-                        for(var i = 0; i < list.length; i++)list[i](value);
-                        resolvers.length = 0, rejectors.length = 0;
+                        for (var i = 0; i < list.length; i++) {
+                            list[i](value);
+                        }resolvers.length = 0, rejectors.length = 0;
                         instance.state = shouldAbsorb;
-                        instance.retry = function() {
+                        instance.retry = function () {
                             execute(value);
                         };
                     });
@@ -216,7 +238,7 @@ var load6 = __swcpack_require__.bind(void 0, function(module, exports) {
         function executeOnce(then) {
             var runs = 0;
             function run(fn) {
-                return function(value) {
+                return function (value) {
                     if (runs++ > 0) return;
                     fn(value);
                 };
@@ -230,12 +252,12 @@ var load6 = __swcpack_require__.bind(void 0, function(module, exports) {
         }
         executeOnce(executor);
     };
-    PromisePolyfill.prototype.then = function(onFulfilled, onRejection) {
-        var self = this, instance = self._instance;
+    PromisePolyfill.prototype.then = function (onFulfilled, onRejection) {
+        var self = this,
+            instance = self._instance;
         function handle(callback, list, next, state) {
-            list.push(function(value) {
-                if (typeof callback !== "function") next(value);
-                else try {
+            list.push(function (value) {
+                if (typeof callback !== "function") next(value);else try {
                     resolveNext(callback(value));
                 } catch (e) {
                     if (rejectNext) rejectNext(e);
@@ -244,76 +266,80 @@ var load6 = __swcpack_require__.bind(void 0, function(module, exports) {
             if (typeof instance.retry === "function" && state === instance.state) instance.retry();
         }
         var resolveNext, rejectNext;
-        var promise = new PromisePolyfill(function(resolve, reject) {
+        var promise = new PromisePolyfill(function (resolve, reject) {
             resolveNext = resolve, rejectNext = reject;
         });
         handle(onFulfilled, instance.resolvers, resolveNext, true), handle(onRejection, instance.rejectors, rejectNext, false);
         return promise;
     };
-    PromisePolyfill.prototype.catch = function(onRejection) {
+    PromisePolyfill.prototype.catch = function (onRejection) {
         return this.then(null, onRejection);
     };
-    PromisePolyfill.prototype.finally = function(callback) {
-        return this.then(function(value) {
-            return PromisePolyfill.resolve(callback()).then(function() {
+    PromisePolyfill.prototype.finally = function (callback) {
+        return this.then(function (value) {
+            return PromisePolyfill.resolve(callback()).then(function () {
                 return value;
             });
-        }, function(reason) {
-            return PromisePolyfill.resolve(callback()).then(function() {
+        }, function (reason) {
+            return PromisePolyfill.resolve(callback()).then(function () {
                 return PromisePolyfill.reject(reason);
             });
         });
     };
-    PromisePolyfill.resolve = function(value) {
+    PromisePolyfill.resolve = function (value) {
         if (value instanceof PromisePolyfill) return value;
-        return new PromisePolyfill(function(resolve) {
+        return new PromisePolyfill(function (resolve) {
             resolve(value);
         });
     };
-    PromisePolyfill.reject = function(value) {
-        return new PromisePolyfill(function(resolve, reject) {
+    PromisePolyfill.reject = function (value) {
+        return new PromisePolyfill(function (resolve, reject) {
             reject(value);
         });
     };
-    PromisePolyfill.all = function(list) {
-        return new PromisePolyfill(function(resolve, reject) {
-            var total = list.length, count = 0, values = [];
-            if (list.length === 0) resolve([]);
-            else for(var i1 = 0; i1 < list.length; i1++)(function(i) {
-                function consume(value) {
-                    count++;
-                    values[i] = value;
-                    if (count === total) resolve(values);
-                }
-                if (list[i] != null && (typeof list[i] === "object" || typeof list[i] === "function") && typeof list[i].then === "function") list[i].then(consume, reject);
-                else consume(list[i]);
-            })(i1);
+    PromisePolyfill.all = function (list) {
+        return new PromisePolyfill(function (resolve, reject) {
+            var total = list.length,
+                count = 0,
+                values = [];
+            if (list.length === 0) resolve([]);else for (var i1 = 0; i1 < list.length; i1++) {
+                (function (i) {
+                    function consume(value) {
+                        count++;
+                        values[i] = value;
+                        if (count === total) resolve(values);
+                    }
+                    if (list[i] != null && (_typeof(list[i]) === "object" || typeof list[i] === "function") && typeof list[i].then === "function") list[i].then(consume, reject);else consume(list[i]);
+                })(i1);
+            }
         });
     };
-    PromisePolyfill.race = function(list) {
-        return new PromisePolyfill(function(resolve, reject) {
-            for(var i = 0; i < list.length; i++)list[i].then(resolve, reject);
+    PromisePolyfill.race = function (list) {
+        return new PromisePolyfill(function (resolve, reject) {
+            for (var i = 0; i < list.length; i++) {
+                list[i].then(resolve, reject);
+            }
         });
     };
     module.exports = PromisePolyfill;
 });
-var load7 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load7 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var PromisePolyfill = load6();
     if (typeof window !== "undefined") {
-        if (typeof window.Promise === "undefined") window.Promise = PromisePolyfill;
-        else if (!window.Promise.prototype.finally) window.Promise.prototype.finally = PromisePolyfill.prototype.finally;
+        if (typeof window.Promise === "undefined") window.Promise = PromisePolyfill;else if (!window.Promise.prototype.finally) window.Promise.prototype.finally = PromisePolyfill.prototype.finally;
         module.exports = window.Promise;
     } else if (typeof global !== "undefined") {
-        if (typeof global.Promise === "undefined") global.Promise = PromisePolyfill;
-        else if (!global.Promise.prototype.finally) global.Promise.prototype.finally = PromisePolyfill.prototype.finally;
+        if (typeof global.Promise === "undefined") global.Promise = PromisePolyfill;else if (!global.Promise.prototype.finally) global.Promise.prototype.finally = PromisePolyfill.prototype.finally;
         module.exports = global.Promise;
     } else module.exports = PromisePolyfill;
 });
-var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load8 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
-    module.exports = function($window) {
+    module.exports = function ($window) {
         var $doc = $window && $window.document;
         var currentRedraw;
         var nameSpace = {
@@ -330,7 +356,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             var original = vnode.state;
             try {
                 return this.apply(original, arguments);
-            } finally{
+            } finally {
                 checkState(vnode, original);
             }
         }
@@ -342,7 +368,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             }
         }
         function createNodes(parent, vnodes, start, end, hooks, nextSibling, ns) {
-            for(var i = start; i < end; i++){
+            for (var i = start; i < end; i++) {
                 var vnode = vnodes[i];
                 if (vnode != null) createNode(parent, vnode, hooks, ns, nextSibling);
             }
@@ -352,7 +378,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             if (typeof tag === "string") {
                 vnode.state = {};
                 if (vnode.attrs != null) initLifecycle(vnode.attrs, vnode, hooks);
-                switch(tag){
+                switch (tag) {
                     case "#":
                         createText(parent, vnode, nextSibling);
                         break;
@@ -394,7 +420,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             vnode.instance = [];
             var fragment = $doc.createDocumentFragment();
             var child;
-            while(child = temp.firstChild){
+            while (child = temp.firstChild) {
                 vnode.instance.push(child);
                 fragment.appendChild(child);
             }
@@ -425,10 +451,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             insertNode(parent, element, nextSibling);
             if (!maybeSetContentEditable(vnode)) {
                 if (vnode.text != null) {
-                    if (vnode.text !== "") element.textContent = vnode.text;
-                    else vnode.children = [
-                        Vnode("#", undefined, undefined, vnode.text, undefined, undefined)
-                    ];
+                    if (vnode.text !== "") element.textContent = vnode.text;else vnode.children = [Vnode("#", undefined, undefined, vnode.text, undefined, undefined)];
                 }
                 if (vnode.children != null) {
                     var children = vnode.children;
@@ -466,35 +489,39 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             } else vnode.domSize = 0;
         }
         function updateNodes(parent, old, vnodes, hooks, nextSibling, ns) {
-            if (old === vnodes || old == null && vnodes == null) return;
-            else if (old == null || old.length === 0) createNodes(parent, vnodes, 0, vnodes.length, hooks, nextSibling, ns);
-            else if (vnodes == null || vnodes.length === 0) removeNodes(parent, old, 0, old.length);
-            else {
+            if (old === vnodes || old == null && vnodes == null) return;else if (old == null || old.length === 0) createNodes(parent, vnodes, 0, vnodes.length, hooks, nextSibling, ns);else if (vnodes == null || vnodes.length === 0) removeNodes(parent, old, 0, old.length);else {
                 var isOldKeyed = old[0] != null && old[0].key != null;
                 var isKeyed = vnodes[0] != null && vnodes[0].key != null;
-                var start = 0, oldStart = 0;
-                if (!isOldKeyed) while(oldStart < old.length && old[oldStart] == null)oldStart++;
-                if (!isKeyed) while(start < vnodes.length && vnodes[start] == null)start++;
-                if (isKeyed === null && isOldKeyed == null) return;
+                var start = 0,
+                    oldStart = 0;
+                if (!isOldKeyed) while (oldStart < old.length && old[oldStart] == null) {
+                    oldStart++;
+                }if (!isKeyed) while (start < vnodes.length && vnodes[start] == null) {
+                    start++;
+                }if (isKeyed === null && isOldKeyed == null) return;
                 if (isOldKeyed !== isKeyed) {
                     removeNodes(parent, old, oldStart, old.length);
                     createNodes(parent, vnodes, start, vnodes.length, hooks, nextSibling, ns);
                 } else if (!isKeyed) {
                     var commonLength = old.length < vnodes.length ? old.length : vnodes.length;
                     start = start < oldStart ? start : oldStart;
-                    for(; start < commonLength; start++){
+                    for (; start < commonLength; start++) {
                         o = old[start];
                         v = vnodes[start];
-                        if (o === v || o == null && v == null) continue;
-                        else if (o == null) createNode(parent, v, hooks, ns, getNextSibling(old, start + 1, nextSibling));
-                        else if (v == null) removeNode(parent, o);
-                        else updateNode(parent, o, v, hooks, getNextSibling(old, start + 1, nextSibling), ns);
+                        if (o === v || o == null && v == null) continue;else if (o == null) createNode(parent, v, hooks, ns, getNextSibling(old, start + 1, nextSibling));else if (v == null) removeNode(parent, o);else updateNode(parent, o, v, hooks, getNextSibling(old, start + 1, nextSibling), ns);
                     }
                     if (old.length > commonLength) removeNodes(parent, old, start, old.length);
                     if (vnodes.length > commonLength) createNodes(parent, vnodes, start, vnodes.length, hooks, nextSibling, ns);
                 } else {
-                    var oldEnd = old.length - 1, end = vnodes.length - 1, map, o, v, oe, ve, topSibling;
-                    while(oldEnd >= oldStart && end >= start){
+                    var oldEnd = old.length - 1,
+                        end = vnodes.length - 1,
+                        map,
+                        o,
+                        v,
+                        oe,
+                        ve,
+                        topSibling;
+                    while (oldEnd >= oldStart && end >= start) {
                         oe = old[oldEnd];
                         ve = vnodes[end];
                         if (oe.key !== ve.key) break;
@@ -502,14 +529,14 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                         if (ve.dom != null) nextSibling = ve.dom;
                         oldEnd--, end--;
                     }
-                    while(oldEnd >= oldStart && end >= start){
+                    while (oldEnd >= oldStart && end >= start) {
                         o = old[oldStart];
                         v = vnodes[start];
                         if (o.key !== v.key) break;
                         oldStart++, start++;
                         if (o !== v) updateNode(parent, o, v, hooks, getNextSibling(old, oldStart, nextSibling), ns);
                     }
-                    while(oldEnd >= oldStart && end >= start){
+                    while (oldEnd >= oldStart && end >= start) {
                         if (start === end) break;
                         if (o.key !== ve.key || oe.key !== v.key) break;
                         topSibling = getNextSibling(old, oldStart, nextSibling);
@@ -525,7 +552,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                         o = old[oldStart];
                         v = vnodes[start];
                     }
-                    while(oldEnd >= oldStart && end >= start){
+                    while (oldEnd >= oldStart && end >= start) {
                         if (oe.key !== ve.key) break;
                         if (oe !== ve) updateNode(parent, oe, ve, hooks, nextSibling, ns);
                         if (ve.dom != null) nextSibling = ve.dom;
@@ -533,12 +560,19 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                         oe = old[oldEnd];
                         ve = vnodes[end];
                     }
-                    if (start > end) removeNodes(parent, old, oldStart, oldEnd + 1);
-                    else if (oldStart > oldEnd) createNodes(parent, vnodes, start, end + 1, hooks, nextSibling, ns);
-                    else {
-                        var originalNextSibling = nextSibling, vnodesLength = end - start + 1, oldIndices = new Array(vnodesLength), li = 0, i = 0, pos = 2147483647, matched = 0, map, lisIndices;
-                        for(i = 0; i < vnodesLength; i++)oldIndices[i] = -1;
-                        for(i = end; i >= start; i--){
+                    if (start > end) removeNodes(parent, old, oldStart, oldEnd + 1);else if (oldStart > oldEnd) createNodes(parent, vnodes, start, end + 1, hooks, nextSibling, ns);else {
+                        var originalNextSibling = nextSibling,
+                            vnodesLength = end - start + 1,
+                            oldIndices = new Array(vnodesLength),
+                            li = 0,
+                            i = 0,
+                            pos = 2147483647,
+                            matched = 0,
+                            map,
+                            lisIndices;
+                        for (i = 0; i < vnodesLength; i++) {
+                            oldIndices[i] = -1;
+                        }for (i = end; i >= start; i--) {
                             if (map == null) map = getKeyMap(old, oldStart, oldEnd + 1);
                             ve = vnodes[i];
                             var oldIndex = map[ve.key];
@@ -554,19 +588,16 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                         }
                         nextSibling = originalNextSibling;
                         if (matched !== oldEnd - oldStart + 1) removeNodes(parent, old, oldStart, oldEnd + 1);
-                        if (matched === 0) createNodes(parent, vnodes, start, end + 1, hooks, nextSibling, ns);
-                        else {
+                        if (matched === 0) createNodes(parent, vnodes, start, end + 1, hooks, nextSibling, ns);else {
                             if (pos === -1) {
                                 lisIndices = makeLisIndices(oldIndices);
                                 li = lisIndices.length - 1;
-                                for(i = end; i >= start; i--){
+                                for (i = end; i >= start; i--) {
                                     v = vnodes[i];
-                                    if (oldIndices[i - start] === -1) createNode(parent, v, hooks, ns, nextSibling);
-                                    else if (lisIndices[li] === i - start) li--;
-                                    else moveNodes(parent, v, nextSibling);
+                                    if (oldIndices[i - start] === -1) createNode(parent, v, hooks, ns, nextSibling);else if (lisIndices[li] === i - start) li--;else moveNodes(parent, v, nextSibling);
                                     if (v.dom != null) nextSibling = vnodes[i].dom;
                                 }
-                            } else for(i = end; i >= start; i--){
+                            } else for (i = end; i >= start; i--) {
                                 v = vnodes[i];
                                 if (oldIndices[i - start] === -1) createNode(parent, v, hooks, ns, nextSibling);
                                 if (v.dom != null) nextSibling = vnodes[i].dom;
@@ -577,14 +608,15 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             }
         }
         function updateNode(parent, old, vnode, hooks, nextSibling, ns) {
-            var oldTag = old.tag, tag = vnode.tag;
+            var oldTag = old.tag,
+                tag = vnode.tag;
             if (oldTag === tag) {
                 vnode.state = old.state;
                 vnode.events = old.events;
                 if (shouldNotUpdate(vnode, old)) return;
                 if (typeof oldTag === "string") {
                     if (vnode.attrs != null) updateLifecycle(vnode.attrs, vnode, hooks);
-                    switch(oldTag){
+                    switch (oldTag) {
                         case "#":
                             updateText(old, vnode);
                             break;
@@ -619,10 +651,11 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
         }
         function updateFragment(parent, old, vnode, hooks, nextSibling, ns) {
             updateNodes(parent, old.children, vnode.children, hooks, nextSibling, ns);
-            var domSize = 0, children = vnode.children;
+            var domSize = 0,
+                children = vnode.children;
             vnode.dom = null;
             if (children != null) {
-                for(var i = 0; i < children.length; i++){
+                for (var i = 0; i < children.length; i++) {
                     var child = children[i];
                     if (child != null && child.dom != null) {
                         if (vnode.dom == null) vnode.dom = child.dom;
@@ -647,12 +680,8 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                 if (old.text != null && vnode.text != null && vnode.text !== "") {
                     if (old.text.toString() !== vnode.text.toString()) old.dom.firstChild.nodeValue = vnode.text;
                 } else {
-                    if (old.text != null) old.children = [
-                        Vnode("#", undefined, undefined, old.text, undefined, old.dom.firstChild)
-                    ];
-                    if (vnode.text != null) vnode.children = [
-                        Vnode("#", undefined, undefined, vnode.text, undefined, undefined)
-                    ];
+                    if (old.text != null) old.children = [Vnode("#", undefined, undefined, old.text, undefined, old.dom.firstChild)];
+                    if (vnode.text != null) vnode.children = [Vnode("#", undefined, undefined, vnode.text, undefined, undefined)];
                     updateNodes(element, old.children, vnode.children, hooks, null, ns);
                 }
             }
@@ -663,8 +692,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             updateLifecycle(vnode.state, vnode, hooks);
             if (vnode.attrs != null) updateLifecycle(vnode.attrs, vnode, hooks);
             if (vnode.instance != null) {
-                if (old.instance == null) createNode(parent, vnode.instance, hooks, ns, nextSibling);
-                else updateNode(parent, old.instance, vnode.instance, hooks, nextSibling, ns);
+                if (old.instance == null) createNode(parent, vnode.instance, hooks, ns, nextSibling);else updateNode(parent, old.instance, vnode.instance, hooks, nextSibling, ns);
                 vnode.dom = vnode.instance.dom;
                 vnode.domSize = vnode.instance.domSize;
             } else if (old.instance != null) {
@@ -678,7 +706,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
         }
         function getKeyMap(vnodes, start, end) {
             var map = Object.create(null);
-            for(; start < end; start++){
+            for (; start < end; start++) {
                 var vnode = vnodes[start];
                 if (vnode != null) {
                     var key = vnode.key;
@@ -689,13 +717,14 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
         }
         var lisTemp = [];
         function makeLisIndices(a) {
-            var result = [
-                0
-            ];
-            var u = 0, v = 0, i = 0;
+            var result = [0];
+            var u = 0,
+                v = 0,
+                i = 0;
             var il = lisTemp.length = a.length;
-            for(var i = 0; i < il; i++)lisTemp[i] = a[i];
-            for(var i = 0; i < il; ++i){
+            for (var i = 0; i < il; i++) {
+                lisTemp[i] = a[i];
+            }for (var i = 0; i < il; ++i) {
                 if (a[i] === -1) continue;
                 var j = result[result.length - 1];
                 if (a[j] < a[i]) {
@@ -705,10 +734,9 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                 }
                 u = 0;
                 v = result.length - 1;
-                while(u < v){
+                while (u < v) {
                     var c = (u >>> 1) + (v >>> 1) + (u & v & 1);
-                    if (a[result[c]] < a[i]) u = c + 1;
-                    else v = c;
+                    if (a[result[c]] < a[i]) u = c + 1;else v = c;
                 }
                 if (a[i] < a[result[u]]) {
                     if (u > 0) lisTemp[i] = result[u - 1];
@@ -717,7 +745,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             }
             u = result.length;
             v = result[u - 1];
-            while(u-- > 0){
+            while (u-- > 0) {
                 result[u] = v;
                 v = lisTemp[v];
             }
@@ -725,7 +753,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             return result;
         }
         function getNextSibling(vnodes, i, nextSibling) {
-            for(; i < vnodes.length; i++){
+            for (; i < vnodes.length; i++) {
                 if (vnodes[i] != null && vnodes[i].dom != null) return vnodes[i].dom;
             }
             return nextSibling;
@@ -736,16 +764,16 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             insertNode(parent, frag, nextSibling);
         }
         function moveChildToFrag(parent, frag, vnode) {
-            while(vnode.dom != null && vnode.dom.parentNode === parent){
+            while (vnode.dom != null && vnode.dom.parentNode === parent) {
                 if (typeof vnode.tag !== "string") {
                     vnode = vnode.instance;
                     if (vnode != null) continue;
-                } else if (vnode.tag === "<") for(var i = 0; i < vnode.instance.length; i++)frag.appendChild(vnode.instance[i]);
-                else if (vnode.tag !== "[") frag.appendChild(vnode.dom);
-                else if (vnode.children.length === 1) {
+                } else if (vnode.tag === "<") for (var i = 0; i < vnode.instance.length; i++) {
+                    frag.appendChild(vnode.instance[i]);
+                } else if (vnode.tag !== "[") frag.appendChild(vnode.dom);else if (vnode.children.length === 1) {
                     vnode = vnode.children[0];
                     if (vnode != null) continue;
-                } else for(var i = 0; i < vnode.children.length; i++){
+                } else for (var i = 0; i < vnode.children.length; i++) {
                     var child = vnode.children[i];
                     if (child != null) moveChildToFrag(parent, frag, child);
                 }
@@ -753,8 +781,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             }
         }
         function insertNode(parent, dom, nextSibling) {
-            if (nextSibling != null) parent.insertBefore(dom, nextSibling);
-            else parent.appendChild(dom);
+            if (nextSibling != null) parent.insertBefore(dom, nextSibling);else parent.appendChild(dom);
         }
         function maybeSetContentEditable(vnode) {
             if (vnode.attrs == null || vnode.attrs.contenteditable == null && vnode.attrs.contentEditable == null) return false;
@@ -766,7 +793,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             return true;
         }
         function removeNodes(parent, vnodes, start, end) {
-            for(var i = start; i < end; i++){
+            for (var i = start; i < end; i++) {
                 var vnode = vnodes[i];
                 if (vnode != null) removeNode(parent, vnode);
             }
@@ -795,7 +822,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                 removeChild(parent, vnode);
             } else {
                 if (stateResult != null) {
-                    var next = function() {
+                    var next = function next() {
                         if (mask & 1) {
                             mask &= 2;
                             if (!mask) reallyRemove();
@@ -804,7 +831,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                     stateResult.then(next, next);
                 }
                 if (attrsResult != null) {
-                    var next = function() {
+                    var next = function next() {
                         if (mask & 2) {
                             mask &= 1;
                             if (!mask) reallyRemove();
@@ -820,15 +847,16 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             }
         }
         function removeHTML(parent, vnode) {
-            for(var i = 0; i < vnode.instance.length; i++)parent.removeChild(vnode.instance[i]);
+            for (var i = 0; i < vnode.instance.length; i++) {
+                parent.removeChild(vnode.instance[i]);
+            }
         }
         function removeChild(parent, vnode) {
-            while(vnode.dom != null && vnode.dom.parentNode === parent){
+            while (vnode.dom != null && vnode.dom.parentNode === parent) {
                 if (typeof vnode.tag !== "string") {
                     vnode = vnode.instance;
                     if (vnode != null) continue;
-                } else if (vnode.tag === "<") removeHTML(parent, vnode);
-                else {
+                } else if (vnode.tag === "<") removeHTML(parent, vnode);else {
                     if (vnode.tag !== "[") {
                         parent.removeChild(vnode.dom);
                         if (!Array.isArray(vnode.children)) break;
@@ -836,7 +864,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                     if (vnode.children.length === 1) {
                         vnode = vnode.children[0];
                         if (vnode != null) continue;
-                    } else for(var i = 0; i < vnode.children.length; i++){
+                    } else for (var i = 0; i < vnode.children.length; i++) {
                         var child = vnode.children[i];
                         if (child != null) removeChild(parent, child);
                     }
@@ -851,39 +879,34 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                 if (vnode.instance != null) onremove(vnode.instance);
             } else {
                 var children = vnode.children;
-                if (Array.isArray(children)) for(var i = 0; i < children.length; i++){
+                if (Array.isArray(children)) for (var i = 0; i < children.length; i++) {
                     var child = children[i];
                     if (child != null) onremove(child);
                 }
             }
         }
         function setAttrs(vnode, attrs, ns) {
-            for(var key in attrs)setAttr(vnode, key, null, attrs[key], ns);
+            for (var key in attrs) {
+                setAttr(vnode, key, null, attrs[key], ns);
+            }
         }
         function setAttr(vnode, key, old, value, ns) {
-            if (key === "key" || key === "is" || value == null || isLifecycleMethod(key) || old === value && !isFormAttribute(vnode, key) && typeof value !== "object") return;
+            if (key === "key" || key === "is" || value == null || isLifecycleMethod(key) || old === value && !isFormAttribute(vnode, key) && (typeof value === "undefined" ? "undefined" : _typeof(value)) !== "object") return;
             if (key[0] === "o" && key[1] === "n") return updateEvent(vnode, key, value);
-            if (key.slice(0, 6) === "xlink:") vnode.dom.setAttributeNS("http://www.w3.org/1999/xlink", key.slice(6), value);
-            else if (key === "style") updateStyle(vnode.dom, old, value);
-            else if (hasPropertyKey(vnode, key, ns)) {
+            if (key.slice(0, 6) === "xlink:") vnode.dom.setAttributeNS("http://www.w3.org/1999/xlink", key.slice(6), value);else if (key === "style") updateStyle(vnode.dom, old, value);else if (hasPropertyKey(vnode, key, ns)) {
                 if (key === "value") {
                     if ((vnode.tag === "input" || vnode.tag === "textarea") && vnode.dom.value === "" + value && vnode.dom === activeElement()) return;
                     if (vnode.tag === "select" && old !== null && vnode.dom.value === "" + value) return;
                     if (vnode.tag === "option" && old !== null && vnode.dom.value === "" + value) return;
                 }
-                if (vnode.tag === "input" && key === "type") vnode.dom.setAttribute(key, value);
-                else vnode.dom[key] = value;
+                if (vnode.tag === "input" && key === "type") vnode.dom.setAttribute(key, value);else vnode.dom[key] = value;
             } else if (typeof value === "boolean") {
-                if (value) vnode.dom.setAttribute(key, "");
-                else vnode.dom.removeAttribute(key);
+                if (value) vnode.dom.setAttribute(key, "");else vnode.dom.removeAttribute(key);
             } else vnode.dom.setAttribute(key === "className" ? "class" : key, value);
         }
         function removeAttr(vnode, key, old, ns) {
             if (key === "key" || key === "is" || old == null || isLifecycleMethod(key)) return;
-            if (key[0] === "o" && key[1] === "n" && !isLifecycleMethod(key)) updateEvent(vnode, key, undefined);
-            else if (key === "style") updateStyle(vnode.dom, old, null);
-            else if (hasPropertyKey(vnode, key, ns) && key !== "className" && !(key === "value" && (vnode.tag === "option" || vnode.tag === "select" && vnode.dom.selectedIndex === -1 && vnode.dom === activeElement())) && !(vnode.tag === "input" && key === "type")) vnode.dom[key] = null;
-            else {
+            if (key[0] === "o" && key[1] === "n" && !isLifecycleMethod(key)) updateEvent(vnode, key, undefined);else if (key === "style") updateStyle(vnode.dom, old, null);else if (hasPropertyKey(vnode, key, ns) && key !== "className" && !(key === "value" && (vnode.tag === "option" || vnode.tag === "select" && vnode.dom.selectedIndex === -1 && vnode.dom === activeElement())) && !(vnode.tag === "input" && key === "type")) vnode.dom[key] = null;else {
                 var nsLastIndex = key.indexOf(":");
                 if (nsLastIndex !== -1) key = key.slice(nsLastIndex + 1);
                 if (old !== false) vnode.dom.removeAttribute(key === "className" ? "class" : key);
@@ -901,10 +924,13 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             if ("selectedIndex" in attrs) setAttr(vnode, "selectedIndex", null, attrs.selectedIndex, undefined);
         }
         function updateAttrs(vnode, old, attrs, ns) {
-            if (attrs != null) for(var key in attrs)setAttr(vnode, key, old && old[key], attrs[key], ns);
-            var val;
+            if (attrs != null) for (var key in attrs) {
+                setAttr(vnode, key, old && old[key], attrs[key], ns);
+            }var val;
             if (old != null) {
-                for(var key in old)if ((val = old[key]) != null && (attrs == null || attrs[key] == null)) removeAttr(vnode, key, val, ns);
+                for (var key in old) {
+                    if ((val = old[key]) != null && (attrs == null || attrs[key] == null)) removeAttr(vnode, key, val, ns);
+                }
             }
         }
         function isFormAttribute(vnode, attr) {
@@ -924,32 +950,30 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             return key[0] === "-" && key[1] === "-" ? key : key === "cssFloat" ? "float" : key.replace(uppercaseRegex, toLowerCase);
         }
         function updateStyle(element, old, style) {
-            if (old === style) ;
-            else if (style == null) element.style.cssText = "";
-            else if (typeof style !== "object") element.style.cssText = style;
-            else if (old == null || typeof old !== "object") {
+            if (old === style) ;else if (style == null) element.style.cssText = "";else if ((typeof style === "undefined" ? "undefined" : _typeof(style)) !== "object") element.style.cssText = style;else if (old == null || (typeof old === "undefined" ? "undefined" : _typeof(old)) !== "object") {
                 element.style.cssText = "";
-                for(var key in style){
+                for (var key in style) {
                     var value = style[key];
                     if (value != null) element.style.setProperty(normalizeKey(key), String(value));
                 }
             } else {
-                for(var key in style){
+                for (var key in style) {
                     var value = style[key];
                     if (value != null && (value = String(value)) !== String(old[key])) element.style.setProperty(normalizeKey(key), value);
                 }
-                for(var key in old)if (old[key] != null && style[key] == null) element.style.removeProperty(normalizeKey(key));
+                for (var key in old) {
+                    if (old[key] != null && style[key] == null) element.style.removeProperty(normalizeKey(key));
+                }
             }
         }
         function EventDict() {
             this._ = currentRedraw;
         }
         EventDict.prototype = Object.create(null);
-        EventDict.prototype.handleEvent = function(ev) {
+        EventDict.prototype.handleEvent = function (ev) {
             var handler = this["on" + ev.type];
             var result;
-            if (typeof handler === "function") result = handler.call(ev.currentTarget, ev);
-            else if (typeof handler.handleEvent === "function") handler.handleEvent(ev);
+            if (typeof handler === "function") result = handler.call(ev.currentTarget, ev);else if (typeof handler.handleEvent === "function") handler.handleEvent(ev);
             if (this._ && ev.redraw !== false) (0, this._)();
             if (result === false) {
                 ev.preventDefault();
@@ -959,14 +983,14 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
         function updateEvent(vnode, key, value) {
             if (vnode.events != null) {
                 if (vnode.events[key] === value) return;
-                if (value != null && (typeof value === "function" || typeof value === "object")) {
+                if (value != null && (typeof value === "function" || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object")) {
                     if (vnode.events[key] == null) vnode.dom.addEventListener(key.slice(2), vnode.events, false);
                     vnode.events[key] = value;
                 } else {
                     if (vnode.events[key] != null) vnode.dom.removeEventListener(key.slice(2), vnode.events, false);
                     vnode.events[key] = undefined;
                 }
-            } else if (value != null && (typeof value === "function" || typeof value === "object")) {
+            } else if (value != null && (typeof value === "function" || (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object")) {
                 vnode.events = new EventDict();
                 vnode.dom.addEventListener(key.slice(2), vnode.events, false);
                 vnode.events[key] = value;
@@ -990,7 +1014,7 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
                     if (force !== undefined && !force) break;
                 }
                 return false;
-            }while (false);
+            } while (false);
             vnode.dom = old.dom;
             vnode.domSize = old.domSize;
             vnode.instance = old.instance;
@@ -999,53 +1023,56 @@ var load8 = __swcpack_require__.bind(void 0, function(module, exports) {
             vnode.text = old.text;
             return true;
         }
-        return function(dom, vnodes, redraw) {
+        return function (dom, vnodes, redraw) {
             if (!dom) throw new TypeError("Ensure the DOM element being passed to m.route/m.mount/m.render is not undefined.");
             var hooks = [];
             var active = activeElement();
             var namespace = dom.namespaceURI;
             if (dom.vnodes == null) dom.textContent = "";
-            vnodes = Vnode.normalizeChildren(Array.isArray(vnodes) ? vnodes : [
-                vnodes
-            ]);
+            vnodes = Vnode.normalizeChildren(Array.isArray(vnodes) ? vnodes : [vnodes]);
             var prevRedraw = currentRedraw;
             try {
                 currentRedraw = typeof redraw === "function" ? redraw : undefined;
                 updateNodes(dom, dom.vnodes, vnodes, hooks, null, namespace === "http://www.w3.org/1999/xhtml" ? undefined : namespace);
-            } finally{
+            } finally {
                 currentRedraw = prevRedraw;
             }
             dom.vnodes = vnodes;
             if (active != null && activeElement() !== active && typeof active.focus === "function") active.focus();
-            for(var i = 0; i < hooks.length; i++)hooks[i]();
+            for (var i = 0; i < hooks.length; i++) {
+                hooks[i]();
+            }
         };
     };
 });
-var load9 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load9 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     module.exports = load8()(window);
 });
-var load10 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load10 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
-    module.exports = function(render1, schedule, console) {
+    module.exports = function (render1, schedule, console) {
         var subscriptions = [];
         var rendering = false;
         var pending = false;
         function sync() {
             if (rendering) throw new Error("Nested m.redraw.sync() call");
             rendering = true;
-            for(var i = 0; i < subscriptions.length; i += 2)try {
-                render1(subscriptions[i], Vnode(subscriptions[i + 1]), redraw);
-            } catch (e) {
-                console.error(e);
-            }
-            rendering = false;
+            for (var i = 0; i < subscriptions.length; i += 2) {
+                try {
+                    render1(subscriptions[i], Vnode(subscriptions[i + 1]), redraw);
+                } catch (e) {
+                    console.error(e);
+                }
+            }rendering = false;
         }
         function redraw() {
             if (!pending) {
                 pending = true;
-                schedule(function() {
+                schedule(function () {
                     pending = false;
                     sync();
                 });
@@ -1070,44 +1097,49 @@ var load10 = __swcpack_require__.bind(void 0, function(module, exports) {
         };
     };
 });
-var load11 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load11 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var render2 = load9();
     module.exports = load10()(render2, requestAnimationFrame, console);
 });
-var load12 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load12 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
-    module.exports = function(object) {
+
+    module.exports = function (object) {
         if (Object.prototype.toString.call(object) !== "[object Object]") return "";
         var args = [];
-        for(var key1 in object)destructure(key1, object[key1]);
-        return args.join("&");
+        for (var key1 in object) {
+            destructure(key1, object[key1]);
+        }return args.join("&");
         function destructure(key, value) {
             if (Array.isArray(value)) {
-                for(var i = 0; i < value.length; i++){
+                for (var i = 0; i < value.length; i++) {
                     destructure(key + "[" + i + "]", value[i]);
                 }
             } else if (Object.prototype.toString.call(value) === "[object Object]") {
-                for(var i in value){
+                for (var i in value) {
                     destructure(key + "[" + i + "]", value[i]);
                 }
             } else args.push(encodeURIComponent(key) + (value != null && value !== "" ? "=" + encodeURIComponent(value) : ""));
         }
     };
 });
-var load13 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load13 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
-    module.exports = Object.assign || function(target, source) {
-        if (source) Object.keys(source).forEach(function(key) {
+
+    module.exports = Object.assign || function (target, source) {
+        if (source) Object.keys(source).forEach(function (key) {
             target[key] = source[key];
         });
     };
 });
-var load14 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load14 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var buildQueryString = load12();
     var assign = load13();
-    module.exports = function(template, params) {
+    module.exports = function (template, params) {
         if (/:([^\/\.-]+)(\.{3})?:/.test(template)) throw new SyntaxError("Template parameter names *must* be separated");
         if (params == null) return template;
         var queryIndex = template.indexOf("?");
@@ -1117,7 +1149,7 @@ var load14 = __swcpack_require__.bind(void 0, function(module, exports) {
         var path = template.slice(0, pathEnd);
         var query = {};
         assign(query, params);
-        var resolved = path.replace(/:([^\/\.-]+)(\.{3})?/g, function(m1, key, variadic) {
+        var resolved = path.replace(/:([^\/\.-]+)(\.{3})?/g, function (m1, key, variadic) {
             delete query[key];
             if (params[key] == null) return m1;
             return variadic ? params[key] : encodeURIComponent(String(params[key]));
@@ -1136,10 +1168,11 @@ var load14 = __swcpack_require__.bind(void 0, function(module, exports) {
         return result;
     };
 });
-var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load15 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var buildPathname = load14();
-    module.exports = function($window, Promise, oncompletion) {
+    module.exports = function ($window, Promise, oncompletion) {
         var callbackCount = 0;
         function PromiseProxy(executor) {
             return new Promise(executor);
@@ -1147,16 +1180,17 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
         PromiseProxy.prototype = Promise.prototype;
         PromiseProxy.__proto__ = Promise;
         function makeRequest(factory) {
-            return function(url, args) {
+            return function (url, args) {
                 if (typeof url !== "string") {
                     args = url;
                     url = url.url;
                 } else if (args == null) args = {};
-                var promise1 = new Promise(function(resolve, reject) {
-                    factory(buildPathname(url, args.params), args, function(data) {
+                var promise1 = new Promise(function (resolve, reject) {
+                    factory(buildPathname(url, args.params), args, function (data) {
                         if (typeof args.type === "function") {
-                            if (Array.isArray(data)) for(var i = 0; i < data.length; i++)data[i] = new args.type(data[i]);
-                            else data = new args.type(data);
+                            if (Array.isArray(data)) for (var i = 0; i < data.length; i++) {
+                                data[i] = new args.type(data[i]);
+                            } else data = new args.type(data);
                         }
                         resolve(data);
                     }, reject);
@@ -1170,10 +1204,10 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
                 function wrap(promise) {
                     var then = promise.then;
                     promise.constructor = PromiseProxy;
-                    promise.then = function() {
+                    promise.then = function () {
                         count++;
                         var next = then.apply(promise, arguments);
-                        next.then(complete, function(e) {
+                        next.then(complete, function (e) {
                             complete();
                             if (count === 0) throw e;
                         });
@@ -1184,21 +1218,23 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
             };
         }
         function hasHeader(args, name) {
-            for(var key in args.headers){
-                if (({}).hasOwnProperty.call(args.headers, key) && name.test(key)) return true;
+            for (var key in args.headers) {
+                if ({}.hasOwnProperty.call(args.headers, key) && name.test(key)) return true;
             }
             return false;
         }
         return {
-            request: makeRequest(function(url, args, resolve, reject) {
+            request: makeRequest(function (url, args, resolve, reject) {
                 var method = args.method != null ? args.method.toUpperCase() : "GET";
                 var body = args.body;
                 var assumeJSON = (args.serialize == null || args.serialize === JSON.serialize) && !(body instanceof $window.FormData);
                 var responseType = args.responseType || (typeof args.extract === "function" ? "" : "json");
-                var xhr = new $window.XMLHttpRequest(), aborted = false;
-                var original = xhr, replacedAbort;
+                var xhr = new $window.XMLHttpRequest(),
+                    aborted = false;
+                var original = xhr,
+                    replacedAbort;
                 var abort = xhr.abort;
-                xhr.abort = function() {
+                xhr.abort = function () {
                     aborted = true;
                     abort.call(this);
                 };
@@ -1208,12 +1244,14 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
                 if (args.withCredentials) xhr.withCredentials = args.withCredentials;
                 if (args.timeout) xhr.timeout = args.timeout;
                 xhr.responseType = responseType;
-                for(var key in args.headers)if (({}).hasOwnProperty.call(args.headers, key)) xhr.setRequestHeader(key, args.headers[key]);
-                xhr.onreadystatechange = function(ev) {
+                for (var key in args.headers) {
+                    if ({}.hasOwnProperty.call(args.headers, key)) xhr.setRequestHeader(key, args.headers[key]);
+                }xhr.onreadystatechange = function (ev) {
                     if (aborted) return;
                     if (ev.target.readyState === 4) try {
                         var success = ev.target.status >= 200 && ev.target.status < 300 || ev.target.status === 304 || /^file:\/\//i.test(url);
-                        var response = ev.target.response, message;
+                        var response = ev.target.response,
+                            message;
                         if (responseType === "json") {
                             if (!ev.target.responseType && typeof args.extract !== "function") response = JSON.parse(ev.target.responseText);
                         } else if (!responseType || responseType === "text") {
@@ -1223,8 +1261,7 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
                             response = args.extract(ev.target, args);
                             success = true;
                         } else if (typeof args.deserialize === "function") response = args.deserialize(response);
-                        if (success) resolve(response);
-                        else {
+                        if (success) resolve(response);else {
                             try {
                                 message = ev.target.responseText;
                             } catch (e) {
@@ -1243,26 +1280,23 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
                     xhr = args.config(xhr, args, url) || xhr;
                     if (xhr !== original) {
                         replacedAbort = xhr.abort;
-                        xhr.abort = function() {
+                        xhr.abort = function () {
                             aborted = true;
                             replacedAbort.call(this);
                         };
                     }
                 }
-                if (body == null) xhr.send();
-                else if (typeof args.serialize === "function") xhr.send(args.serialize(body));
-                else if (body instanceof $window.FormData) xhr.send(body);
-                else xhr.send(JSON.stringify(body));
+                if (body == null) xhr.send();else if (typeof args.serialize === "function") xhr.send(args.serialize(body));else if (body instanceof $window.FormData) xhr.send(body);else xhr.send(JSON.stringify(body));
             }),
-            jsonp: makeRequest(function(url, args, resolve, reject) {
+            jsonp: makeRequest(function (url, args, resolve, reject) {
                 var callbackName = args.callbackName || "_mithril_" + Math.round(Math.random() * 1e16) + "_" + callbackCount++;
                 var script = $window.document.createElement("script");
-                $window[callbackName] = function(data) {
+                $window[callbackName] = function (data) {
                     delete $window[callbackName];
                     script.parentNode.removeChild(script);
                     resolve(data);
                 };
-                script.onerror = function() {
+                script.onerror = function () {
                     delete $window[callbackName];
                     script.parentNode.removeChild(script);
                     reject(new Error("JSONP request failed"));
@@ -1273,37 +1307,40 @@ var load15 = __swcpack_require__.bind(void 0, function(module, exports) {
         };
     };
 });
-var load16 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load16 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var PromisePolyfill = load7();
     var mountRedraw = load11();
     module.exports = load15()(window, PromisePolyfill, mountRedraw.redraw);
 });
-var load17 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load17 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
-    module.exports = function(string) {
+
+    module.exports = function (string) {
         if (string === "" || string == null) return {};
         if (string.charAt(0) === "?") string = string.slice(1);
-        var entries = string.split("&"), counters = {}, data = {};
-        for(var i = 0; i < entries.length; i++){
+        var entries = string.split("&"),
+            counters = {},
+            data = {};
+        for (var i = 0; i < entries.length; i++) {
             var entry = entries[i].split("=");
             var key = decodeURIComponent(entry[0]);
             var value = entry.length === 2 ? decodeURIComponent(entry[1]) : "";
-            if (value === "true") value = true;
-            else if (value === "false") value = false;
+            if (value === "true") value = true;else if (value === "false") value = false;
             var levels = key.split(/\]\[?|\[/);
             var cursor = data;
             if (key.indexOf("[") > -1) levels.pop();
-            for(var j = 0; j < levels.length; j++){
-                var level = levels[j], nextLevel = levels[j + 1];
+            for (var j = 0; j < levels.length; j++) {
+                var level = levels[j],
+                    nextLevel = levels[j + 1];
                 var isNumber = nextLevel == "" || !isNaN(parseInt(nextLevel, 10));
                 if (level === "") {
                     var key = levels.slice(0, j).join();
                     if (counters[key] == null) counters[key] = Array.isArray(cursor) ? cursor.length : 0;
                     level = counters[key]++;
                 } else if (level === "__proto__") break;
-                if (j === levels.length - 1) cursor[level] = value;
-                else {
+                if (j === levels.length - 1) cursor[level] = value;else {
                     var desc = Object.getOwnPropertyDescriptor(cursor, level);
                     if (desc != null) desc = desc.value;
                     if (desc == null) cursor[level] = desc = isNumber ? [] : {};
@@ -1314,17 +1351,17 @@ var load17 = __swcpack_require__.bind(void 0, function(module, exports) {
         return data;
     };
 });
-var load18 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load18 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var parseQueryString = load17();
-    module.exports = function(url) {
+    module.exports = function (url) {
         var queryIndex = url.indexOf("?");
         var hashIndex = url.indexOf("#");
         var queryEnd = hashIndex < 0 ? url.length : hashIndex;
         var pathEnd = queryIndex < 0 ? queryEnd : queryIndex;
         var path = url.slice(0, pathEnd).replace(/\/{2,}/g, "/");
-        if (!path) path = "/";
-        else {
+        if (!path) path = "/";else {
             if (path[0] !== "/") path = "/" + path;
             if (path.length > 1 && path[path.length - 1] === "/") path = path.slice(0, -1);
         }
@@ -1334,14 +1371,15 @@ var load18 = __swcpack_require__.bind(void 0, function(module, exports) {
         };
     };
 });
-var load19 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load19 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var parsePathname = load18();
-    module.exports = function(template) {
+    module.exports = function (template) {
         var templateData = parsePathname(template);
         var templateKeys = Object.keys(templateData.params);
         var keys = [];
-        var regexp = new RegExp("^" + templateData.path.replace(/:([^\/.-]+)(\.{3}|\.(?!\.)|-)?|[\\^$*+.()|\[\]{}]/g, function(m2, key, extra) {
+        var regexp = new RegExp("^" + templateData.path.replace(/:([^\/.-]+)(\.{3}|\.(?!\.)|-)?|[\\^$*+.()|\[\]{}]/g, function (m2, key, extra) {
             if (key == null) return "\\" + m2;
             keys.push({
                 k: key,
@@ -1351,20 +1389,22 @@ var load19 = __swcpack_require__.bind(void 0, function(module, exports) {
             if (extra === ".") return "([^/]+)\\.";
             return "([^/]+)" + (extra || "");
         }) + "$");
-        return function(data) {
-            for(var i = 0; i < templateKeys.length; i++){
+        return function (data) {
+            for (var i = 0; i < templateKeys.length; i++) {
                 if (templateData.params[templateKeys[i]] !== data.params[templateKeys[i]]) return false;
             }
             if (!keys.length) return regexp.test(data.path);
             var values = regexp.exec(data.path);
             if (values == null) return false;
-            for(var i = 0; i < keys.length; i++)data.params[keys[i].k] = keys[i].r ? values[i + 1] : decodeURIComponent(values[i + 1]);
-            return true;
+            for (var i = 0; i < keys.length; i++) {
+                data.params[keys[i].k] = keys[i].r ? values[i + 1] : decodeURIComponent(values[i + 1]);
+            }return true;
         };
     };
 });
-var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load20 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var Vnode = load();
     var m3 = load2();
     var Promise = load7();
@@ -1373,7 +1413,7 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
     var compileTemplate = load19();
     var assign = load13();
     var sentinel = {};
-    module.exports = function($window, mountRedraw) {
+    module.exports = function ($window, mountRedraw) {
         var fireAsync;
         function setPath(path, data, options) {
             path = buildPathname(path, data);
@@ -1381,16 +1421,19 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
                 fireAsync();
                 var state = options ? options.state : null;
                 var title = options ? options.title : null;
-                if (options && options.replace) $window.history.replaceState(state, title, route1.prefix + path);
-                else $window.history.pushState(state, title, route1.prefix + path);
+                if (options && options.replace) $window.history.replaceState(state, title, route1.prefix + path);else $window.history.pushState(state, title, route1.prefix + path);
             } else $window.location.href = route1.prefix + path;
         }
-        var currentResolver = sentinel, component, attrs1, currentPath, lastUpdate;
+        var currentResolver = sentinel,
+            component,
+            attrs1,
+            currentPath,
+            _lastUpdate;
         var SKIP = route1.SKIP = {};
         function route1(root, defaultRoute, routes) {
             if (root == null) throw new Error("Ensure the DOM element that was passed to `m.route` is not undefined");
             var state = 0;
-            var compiled = Object.keys(routes).map(function(route) {
+            var compiled = Object.keys(routes).map(function (route) {
                 if (route[0] !== "/") throw new SyntaxError("Routes must start with a `/`");
                 if (/:([^\/\.-]+)(\.{3})?:/.test(route)) throw new SyntaxError("Route parameter names must be separated with either `/`, `.`, or `-`");
                 return {
@@ -1406,7 +1449,7 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
             fireAsync = null;
             if (defaultRoute != null) {
                 var defaultData = parsePathname(defaultRoute);
-                if (!compiled.some(function(i) {
+                if (!compiled.some(function (i) {
                     return i.check(defaultData);
                 })) throw new ReferenceError("Default route doesn't match any known routes");
             }
@@ -1431,85 +1474,84 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
                 }
                 loop(0);
                 function loop(i) {
-                    for(; i < compiled.length; i++)if (compiled[i].check(data)) {
-                        var payload = compiled[i].component;
-                        var matchedRoute = compiled[i].route;
-                        var localComp = payload;
-                        var update = lastUpdate = function(comp) {
-                            if (update !== lastUpdate) return;
-                            if (comp === SKIP) return loop(i + 1);
-                            component = comp != null && (typeof comp.view === "function" || typeof comp === "function") ? comp : "div";
-                            attrs1 = data.params, currentPath = path, lastUpdate = null;
-                            currentResolver = payload.render ? payload : null;
-                            if (state === 2) mountRedraw.redraw();
-                            else {
-                                state = 2;
-                                mountRedraw.redraw.sync();
-                            }
-                        };
-                        if (payload.view || typeof payload === "function") {
-                            payload = {};
-                            update(localComp);
-                        } else if (payload.onmatch) p.then(function() {
-                            return payload.onmatch(data.params, path, matchedRoute);
-                        }).then(update, fail);
-                        else update("div");
-                        return;
-                    }
-                    fail();
+                    for (; i < compiled.length; i++) {
+                        if (compiled[i].check(data)) {
+                            var payload = compiled[i].component;
+                            var matchedRoute = compiled[i].route;
+                            var localComp = payload;
+                            var update = _lastUpdate = function lastUpdate(comp) {
+                                if (update !== _lastUpdate) return;
+                                if (comp === SKIP) return loop(i + 1);
+                                component = comp != null && (typeof comp.view === "function" || typeof comp === "function") ? comp : "div";
+                                attrs1 = data.params, currentPath = path, _lastUpdate = null;
+                                currentResolver = payload.render ? payload : null;
+                                if (state === 2) mountRedraw.redraw();else {
+                                    state = 2;
+                                    mountRedraw.redraw.sync();
+                                }
+                            };
+                            if (payload.view || typeof payload === "function") {
+                                payload = {};
+                                update(localComp);
+                            } else if (payload.onmatch) p.then(function () {
+                                return payload.onmatch(data.params, path, matchedRoute);
+                            }).then(update, fail);else update("div");
+                            return;
+                        }
+                    }fail();
                 }
             }
-            fireAsync = function() {
+            fireAsync = function fireAsync() {
                 if (!scheduled) {
                     scheduled = true;
                     callAsync(resolveRoute);
                 }
             };
             if (typeof $window.history.pushState === "function") {
-                onremove = function() {
+                onremove = function onremove() {
                     $window.removeEventListener("popstate", fireAsync, false);
                 };
                 $window.addEventListener("popstate", fireAsync, false);
             } else if (route1.prefix[0] === "#") {
                 fireAsync = null;
-                onremove = function() {
+                onremove = function onremove() {
                     $window.removeEventListener("hashchange", resolveRoute, false);
                 };
                 $window.addEventListener("hashchange", resolveRoute, false);
             }
             return mountRedraw.mount(root, {
-                onbeforeupdate: function() {
+                onbeforeupdate: function onbeforeupdate() {
                     state = state ? 2 : 1;
                     return !(!state || sentinel === currentResolver);
                 },
                 oncreate: resolveRoute,
                 onremove: onremove,
-                view: function() {
+                view: function view() {
                     if (!state || sentinel === currentResolver) return;
-                    var vnode = [
-                        Vnode(component, attrs1.key, attrs1)
-                    ];
+                    var vnode = [Vnode(component, attrs1.key, attrs1)];
                     if (currentResolver) vnode = currentResolver.render(vnode[0]);
                     return vnode;
                 }
             });
         }
-        route1.set = function(path, data, options) {
-            if (lastUpdate != null) {
+        route1.set = function (path, data, options) {
+            if (_lastUpdate != null) {
                 options = options || {};
                 options.replace = true;
             }
-            lastUpdate = null;
+            _lastUpdate = null;
             setPath(path, data, options);
         };
-        route1.get = function() {
+        route1.get = function () {
             return currentPath;
         };
         route1.prefix = "#!";
         route1.Link = {
-            view: function(vnode) {
+            view: function view(vnode) {
                 var options = vnode.attrs.options;
-                var attrs = {}, onclick, href;
+                var attrs = {},
+                    onclick,
+                    href;
                 assign(attrs, vnode.attrs);
                 attrs.selector = attrs.options = attrs.key = attrs.oninit = attrs.oncreate = attrs.onbeforeupdate = attrs.onupdate = attrs.onbeforeremove = attrs.onremove = null;
                 var child = m3(vnode.attrs.selector || "a", attrs, vnode.children);
@@ -1521,11 +1563,9 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
                     onclick = child.attrs.onclick;
                     href = child.attrs.href;
                     child.attrs.href = route1.prefix + href;
-                    child.attrs.onclick = function(e) {
+                    child.attrs.onclick = function (e) {
                         var result;
-                        if (typeof onclick === "function") result = onclick.call(e.currentTarget, e);
-                        else if (onclick == null || typeof onclick !== "object") ;
-                        else if (typeof onclick.handleEvent === "function") onclick.handleEvent(e);
+                        if (typeof onclick === "function") result = onclick.call(e.currentTarget, e);else if (onclick == null || (typeof onclick === "undefined" ? "undefined" : _typeof(onclick)) !== "object") ;else if (typeof onclick.handleEvent === "function") onclick.handleEvent(e);
                         if (result !== false && !e.defaultPrevented && (e.button === 0 || e.which === 0 || e.which === 1) && (!e.currentTarget.target || e.currentTarget.target === "_self") && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey) {
                             e.preventDefault();
                             e.redraw = false;
@@ -1536,19 +1576,21 @@ var load20 = __swcpack_require__.bind(void 0, function(module, exports) {
                 return child;
             }
         };
-        route1.param = function(key) {
+        route1.param = function (key) {
             return attrs1 && key != null ? attrs1[key] : attrs1;
         };
         return route1;
     };
 });
-var load21 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load21 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var mountRedraw = load11();
     module.exports = load20()(window, mountRedraw);
 });
-var load22 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load22 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
+
     var hyperscript = load5();
     var request = load16();
     var mountRedraw = load11();
@@ -1572,12 +1614,15 @@ var load22 = __swcpack_require__.bind(void 0, function(module, exports) {
     m4.PromisePolyfill = load6();
     module.exports = m4;
 });
-var load23 = __swcpack_require__.bind(void 0, function(module, exports) {
+var load23 = __swcpack_require__.bind(void 0, function (module, exports) {
     "use strict";
-    const m5 = load5();
-    const Vnode = load();
-    const VOID_TAGS = new RegExp("^(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr|!doctype)$", "i");
-    const hasOwn = {}.hasOwnProperty;
+
+    var _marked6 = /*#__PURE__*/regeneratorRuntime.mark(tryRender);
+
+    var m5 = load5();
+    var Vnode = load();
+    var VOID_TAGS = new RegExp("^(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr|!doctype)$", "i");
+    var hasOwn = {}.hasOwnProperty;
     function toStyleKey(str) {
         if (str[0] === "-" && str[1] === "-") return str;
         return str.replace(/\W+/g, "-").replace(/([a-z\d])([A-Z])/g, "$1-$2").toLowerCase();
@@ -1593,124 +1638,411 @@ var load23 = __swcpack_require__.bind(void 0, function(module, exports) {
         if (m7 === ">") return "&gt;";
         return "&quot;";
     }
-    const defaults = {
-        escapeText (s) {
+    var defaults = {
+        escapeText: function escapeText(s) {
             return s.replace(/[&<>]/g, replaceHtml);
         },
-        escapeAttribute (s) {
+        escapeAttribute: function escapeAttribute(s) {
             return s.replace(/[&<>"]/g, replaceAttribute);
         }
     };
     function bindOpt(options, key) {
         return options[key] ? options[key].bind(options) : defaults[key];
     }
-    function* tryRender(view1, attrs, options, allowAwait) {
-        if (view1 == null) return "";
-        if (view1.view || typeof view1 === "function") {
-            view1 = m5(view1, attrs);
-            options = options || {};
-        } else options = attrs || {};
-        const hooks = [];
-        let result = "";
-        const escapeAttribute = bindOpt(options, "escapeAttribute");
-        const escapeText = bindOpt(options, "escapeText");
-        const xml = !!options.xml;
-        const strict = xml || !!options.strict;
-        function write(value) {
-            result = "" + result + value;
-        }
-        function* setHooks(source, vnode) {
-            const promises = [];
-            let waitFor;
-            if (allowAwait) waitFor = (p)=>{
-                promises.push(p);
-            };
-            if (source.oninit) source.oninit.call(vnode.state, vnode, waitFor);
-            if (source.onremove) hooks.push(source.onremove.bind(vnode.state, vnode));
-            if (promises.length) yield promises;
-        }
-        function createAttrString(view) {
-            for(const key in view.attrs)if (hasOwn.call(view.attrs, key)) {
-                let value = view.attrs[key];
-                if (value == null || typeof value === "function") continue;
-                const name = key === "className" ? "class" : key;
-                if (name === "style" && typeof value === "object") {
-                    const styles = value;
-                    const props = [];
-                    for (const key of Object.keys(styles)){
-                        const prop = styles[key];
-                        if (prop) props.push(`${toStyleKey(key)}:${prop}`);
-                    }
-                    if (!props.length) continue;
-                    value = props.join(";");
+    function tryRender(view1, attrs, options, allowAwait) {
+        var _marked, _marked2, _marked3, _marked4, _marked5, hooks, result, escapeAttribute, escapeText, xml, strict, write, setHooks, createAttrString, renderComponent, renderElement, renderChildren, renderNode, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, hook;
+
+        return regeneratorRuntime.wrap(function tryRender$(_context6) {
+            while (1) {
+                switch (_context6.prev = _context6.next) {
+                    case 0:
+                        renderNode = function renderNode(vnode) {
+                            return regeneratorRuntime.wrap(function renderNode$(_context5) {
+                                while (1) {
+                                    switch (_context5.prev = _context5.next) {
+                                        case 0:
+                                            if (!(vnode == null)) {
+                                                _context5.next = 2;
+                                                break;
+                                            }
+
+                                            return _context5.abrupt("return");
+
+                                        case 2:
+                                            if (!(typeof vnode.tag === "string")) {
+                                                _context5.next = 18;
+                                                break;
+                                            }
+
+                                            vnode.state = {};
+
+                                            if (!(vnode.attrs != null)) {
+                                                _context5.next = 6;
+                                                break;
+                                            }
+
+                                            return _context5.delegateYield(setHooks(vnode.attrs, vnode), "t0", 6);
+
+                                        case 6:
+                                            _context5.t1 = vnode.tag;
+                                            _context5.next = _context5.t1 === "#" ? 9 : _context5.t1 === "<" ? 11 : _context5.t1 === "[" ? 13 : 15;
+                                            break;
+
+                                        case 9:
+                                            write(escapeText("" + vnode.children));
+                                            return _context5.abrupt("break", 16);
+
+                                        case 11:
+                                            write(vnode.children);
+                                            return _context5.abrupt("break", 16);
+
+                                        case 13:
+                                            return _context5.delegateYield(renderChildren(vnode.children), "t2", 14);
+
+                                        case 14:
+                                            return _context5.abrupt("break", 16);
+
+                                        case 15:
+                                            return _context5.delegateYield(renderElement(vnode), "t3", 16);
+
+                                        case 16:
+                                            _context5.next = 19;
+                                            break;
+
+                                        case 18:
+                                            return _context5.delegateYield(renderComponent(vnode), "t4", 19);
+
+                                        case 19:
+                                        case "end":
+                                            return _context5.stop();
+                                    }
+                                }
+                            }, _marked5, this);
+                        };
+
+                        renderChildren = function renderChildren(vnodes) {
+                            var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, v;
+
+                            return regeneratorRuntime.wrap(function renderChildren$(_context4) {
+                                while (1) {
+                                    switch (_context4.prev = _context4.next) {
+                                        case 0:
+                                            _iteratorNormalCompletion2 = true;
+                                            _didIteratorError2 = false;
+                                            _iteratorError2 = undefined;
+                                            _context4.prev = 3;
+                                            _iterator2 = vnodes[Symbol.iterator]();
+
+                                        case 5:
+                                            if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+                                                _context4.next = 12;
+                                                break;
+                                            }
+
+                                            v = _step2.value;
+
+                                            if (!(v != null)) {
+                                                _context4.next = 9;
+                                                break;
+                                            }
+
+                                            return _context4.delegateYield(renderNode(v), "t0", 9);
+
+                                        case 9:
+                                            _iteratorNormalCompletion2 = true;
+                                            _context4.next = 5;
+                                            break;
+
+                                        case 12:
+                                            _context4.next = 18;
+                                            break;
+
+                                        case 14:
+                                            _context4.prev = 14;
+                                            _context4.t1 = _context4["catch"](3);
+                                            _didIteratorError2 = true;
+                                            _iteratorError2 = _context4.t1;
+
+                                        case 18:
+                                            _context4.prev = 18;
+                                            _context4.prev = 19;
+
+                                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                                _iterator2.return();
+                                            }
+
+                                        case 21:
+                                            _context4.prev = 21;
+
+                                            if (!_didIteratorError2) {
+                                                _context4.next = 24;
+                                                break;
+                                            }
+
+                                            throw _iteratorError2;
+
+                                        case 24:
+                                            return _context4.finish(21);
+
+                                        case 25:
+                                            return _context4.finish(18);
+
+                                        case 26:
+                                        case "end":
+                                            return _context4.stop();
+                                    }
+                                }
+                            }, _marked4, this, [[3, 14, 18, 26], [19,, 21, 25]]);
+                        };
+
+                        renderElement = function renderElement(vnode) {
+                            var text;
+                            return regeneratorRuntime.wrap(function renderElement$(_context3) {
+                                while (1) {
+                                    switch (_context3.prev = _context3.next) {
+                                        case 0:
+                                            write("<" + vnode.tag);
+                                            createAttrString(vnode);
+
+                                            if (!(!xml && VOID_TAGS.test(vnode.tag))) {
+                                                _context3.next = 6;
+                                                break;
+                                            }
+
+                                            write(strict ? "/>" : ">");
+                                            _context3.next = 14;
+                                            break;
+
+                                        case 6:
+                                            write(">");
+
+                                            if (!(vnode.text != null)) {
+                                                _context3.next = 12;
+                                                break;
+                                            }
+
+                                            text = "" + vnode.text;
+
+                                            if (text !== "") write(escapeText(text));
+                                            _context3.next = 13;
+                                            break;
+
+                                        case 12:
+                                            return _context3.delegateYield(renderChildren(vnode.children), "t0", 13);
+
+                                        case 13:
+                                            write("</" + vnode.tag + ">");
+
+                                        case 14:
+                                        case "end":
+                                            return _context3.stop();
+                                    }
+                                }
+                            }, _marked3, this);
+                        };
+
+                        renderComponent = function renderComponent(vnode) {
+                            return regeneratorRuntime.wrap(function renderComponent$(_context2) {
+                                while (1) {
+                                    switch (_context2.prev = _context2.next) {
+                                        case 0:
+                                            if (typeof vnode.tag !== "function") vnode.state = Object.create(vnode.tag);else if (vnode.tag.prototype && vnode.tag.prototype.view) vnode.state = new vnode.tag(vnode);else vnode.state = vnode.tag(vnode);
+                                            return _context2.delegateYield(setHooks(vnode.state, vnode), "t0", 2);
+
+                                        case 2:
+                                            if (!(vnode.attrs != null)) {
+                                                _context2.next = 4;
+                                                break;
+                                            }
+
+                                            return _context2.delegateYield(setHooks(vnode.attrs, vnode), "t1", 4);
+
+                                        case 4:
+                                            vnode.instance = Vnode.normalize(vnode.state.view(vnode));
+
+                                            if (!(vnode.instance != null)) {
+                                                _context2.next = 7;
+                                                break;
+                                            }
+
+                                            return _context2.delegateYield(renderNode(vnode.instance), "t2", 7);
+
+                                        case 7:
+                                        case "end":
+                                            return _context2.stop();
+                                    }
+                                }
+                            }, _marked2, this);
+                        };
+
+                        createAttrString = function createAttrString(view) {
+                            for (var key in view.attrs) {
+                                if (hasOwn.call(view.attrs, key)) {
+                                    var value = view.attrs[key];
+                                    if (value == null || typeof value === "function") continue;
+                                    var name = key === "className" ? "class" : key;
+                                    if (name === "style" && (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
+                                        var styles = value;
+                                        var props = [];
+                                        var _iteratorNormalCompletion = true;
+                                        var _didIteratorError = false;
+                                        var _iteratorError = undefined;
+
+                                        try {
+                                            for (var _iterator = Object.keys(styles)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                                var _key = _step.value;
+
+                                                var prop = styles[_key];
+                                                if (prop) props.push(toStyleKey(_key) + ":" + prop);
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError = true;
+                                            _iteratorError = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                                    _iterator.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError) {
+                                                    throw _iteratorError;
+                                                }
+                                            }
+                                        }
+
+                                        if (!props.length) continue;
+                                        value = props.join(";");
+                                    }
+                                    if (typeof value === "boolean") {
+                                        if (xml) value = value ? "true" : "false";else if (!value) continue;else value = "";
+                                    } else value = "" + value;
+                                    write(" " + name);
+                                    if (strict || value !== "") write("=\"" + escapeAttribute(value) + "\"");
+                                }
+                            }
+                        };
+
+                        setHooks = function setHooks(source, vnode) {
+                            var promises, waitFor;
+                            return regeneratorRuntime.wrap(function setHooks$(_context) {
+                                while (1) {
+                                    switch (_context.prev = _context.next) {
+                                        case 0:
+                                            promises = [];
+                                            waitFor = void 0;
+
+                                            if (allowAwait) waitFor = function waitFor(p) {
+                                                promises.push(p);
+                                            };
+                                            if (source.oninit) source.oninit.call(vnode.state, vnode, waitFor);
+                                            if (source.onremove) hooks.push(source.onremove.bind(vnode.state, vnode));
+
+                                            if (!promises.length) {
+                                                _context.next = 8;
+                                                break;
+                                            }
+
+                                            _context.next = 8;
+                                            return promises;
+
+                                        case 8:
+                                        case "end":
+                                            return _context.stop();
+                                    }
+                                }
+                            }, _marked, this);
+                        };
+
+                        write = function write(value) {
+                            result = "" + result + value;
+                        };
+
+                        _marked = /*#__PURE__*/regeneratorRuntime.mark(setHooks), _marked2 = /*#__PURE__*/regeneratorRuntime.mark(renderComponent), _marked3 = /*#__PURE__*/regeneratorRuntime.mark(renderElement), _marked4 = /*#__PURE__*/regeneratorRuntime.mark(renderChildren), _marked5 = /*#__PURE__*/regeneratorRuntime.mark(renderNode);
+
+                        if (!(view1 == null)) {
+                            _context6.next = 10;
+                            break;
+                        }
+
+                        return _context6.abrupt("return", "");
+
+                    case 10:
+                        if (view1.view || typeof view1 === "function") {
+                            view1 = m5(view1, attrs);
+                            options = options || {};
+                        } else options = attrs || {};
+                        hooks = [];
+                        result = "";
+                        escapeAttribute = bindOpt(options, "escapeAttribute");
+                        escapeText = bindOpt(options, "escapeText");
+                        xml = !!options.xml;
+                        strict = xml || !!options.strict;
+                        return _context6.delegateYield(renderNode(Vnode.normalize(view1)), "t0", 18);
+
+                    case 18:
+                        _iteratorNormalCompletion3 = true;
+                        _didIteratorError3 = false;
+                        _iteratorError3 = undefined;
+                        _context6.prev = 21;
+
+                        for (_iterator3 = hooks[Symbol.iterator](); !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            hook = _step3.value;
+                            hook();
+                        }_context6.next = 29;
+                        break;
+
+                    case 25:
+                        _context6.prev = 25;
+                        _context6.t1 = _context6["catch"](21);
+                        _didIteratorError3 = true;
+                        _iteratorError3 = _context6.t1;
+
+                    case 29:
+                        _context6.prev = 29;
+                        _context6.prev = 30;
+
+                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                            _iterator3.return();
+                        }
+
+                    case 32:
+                        _context6.prev = 32;
+
+                        if (!_didIteratorError3) {
+                            _context6.next = 35;
+                            break;
+                        }
+
+                        throw _iteratorError3;
+
+                    case 35:
+                        return _context6.finish(32);
+
+                    case 36:
+                        return _context6.finish(29);
+
+                    case 37:
+                        return _context6.abrupt("return", result.concat());
+
+                    case 38:
+                    case "end":
+                        return _context6.stop();
                 }
-                if (typeof value === "boolean") {
-                    if (xml) value = value ? "true" : "false";
-                    else if (!value) continue;
-                    else value = "";
-                } else value = "" + value;
-                write(` ${name}`);
-                if (strict || value !== "") write(`="${escapeAttribute(value)}"`);
             }
-        }
-        function* renderComponent(vnode) {
-            if (typeof vnode.tag !== "function") vnode.state = Object.create(vnode.tag);
-            else if (vnode.tag.prototype && vnode.tag.prototype.view) vnode.state = new vnode.tag(vnode);
-            else vnode.state = vnode.tag(vnode);
-            yield* setHooks(vnode.state, vnode);
-            if (vnode.attrs != null) yield* setHooks(vnode.attrs, vnode);
-            vnode.instance = Vnode.normalize(vnode.state.view(vnode));
-            if (vnode.instance != null) yield* renderNode(vnode.instance);
-        }
-        function* renderElement(vnode) {
-            write(`<${vnode.tag}`);
-            createAttrString(vnode);
-            if (!xml && VOID_TAGS.test(vnode.tag)) write(strict ? "/>" : ">");
-            else {
-                write(">");
-                if (vnode.text != null) {
-                    const text = "" + vnode.text;
-                    if (text !== "") write(escapeText(text));
-                } else yield* renderChildren(vnode.children);
-                write(`</${vnode.tag}>`);
-            }
-        }
-        function* renderChildren(vnodes) {
-            for (const v of vnodes)if (v != null) yield* renderNode(v);
-        }
-        function* renderNode(vnode) {
-            if (vnode == null) return;
-            if (typeof vnode.tag === "string") {
-                vnode.state = {};
-                if (vnode.attrs != null) yield* setHooks(vnode.attrs, vnode);
-                switch(vnode.tag){
-                    case "#":
-                        write(escapeText("" + vnode.children));
-                        break;
-                    case "<":
-                        write(vnode.children);
-                        break;
-                    case "[":
-                        yield* renderChildren(vnode.children);
-                        break;
-                    default:
-                        yield* renderElement(vnode);
-                }
-            } else yield* renderComponent(vnode);
-        }
-        yield* renderNode(Vnode.normalize(view1));
-        for (const hook of hooks)hook();
-        return result.concat();
+        }, _marked6, this, [[21, 25, 29, 37], [30,, 32, 36]]);
     }
-    module.exports = async (view, attrs, options)=>{
-        const iter = tryRender(view, attrs, options, true);
-        while(true){
-            const { done , value  } = iter.next();
+    module.exports = async function (view, attrs, options) {
+        var iter = tryRender(view, attrs, options, true);
+        while (true) {
+            var _iter$next = iter.next(),
+                done = _iter$next.done,
+                value = _iter$next.value;
+
             if (done) return value;
             await Promise.all(value);
         }
     };
-    module.exports.sync = (view, attrs, options)=>{
+    module.exports.sync = function (view, attrs, options) {
         return tryRender(view, attrs, options, false).next().value;
     };
     module.exports.escapeText = defaults.escapeText;
@@ -1719,5 +2051,8 @@ var load23 = __swcpack_require__.bind(void 0, function(module, exports) {
 if (!global.window) global.window = global.document = global.requestAnimationFrame = undefined;
 var m = load22();
 var render = load23();
-var AppView = render.sync(m("span", "huhu"));
-export { AppView as AppView };
+render(m("span", "huhu")).then(function (html) {});
+var html = render.sync(m("span", "huhu"));
+module.exports = {
+    AppView: html
+};

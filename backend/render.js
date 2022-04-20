@@ -1,11 +1,7 @@
-
-
-var m = require('mithril')
-var render = require('mithril-node-render')
-
-
-var html = render.sync(m('span', 'huhu'))
+function test() {
+    return "passed";
+}
 
 module.exports = {
-  AppView: html
+    test: test
 }

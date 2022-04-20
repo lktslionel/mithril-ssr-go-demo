@@ -158,9 +158,9 @@ var load2 = __swcpack_require__.bind(void 0, function(module, exports) {
 var load3 = __swcpack_require__.bind(void 0, function(module, exports) {
     "use strict";
     var Vnode = load();
-    module.exports = function(html) {
-        if (html == null) html = "";
-        return Vnode("<", undefined, undefined, html, undefined, undefined);
+    module.exports = function(html1) {
+        if (html1 == null) html1 = "";
+        return Vnode("<", undefined, undefined, html1, undefined, undefined);
     };
 });
 var load4 = __swcpack_require__.bind(void 0, function(module, exports) {
@@ -1719,5 +1719,8 @@ var load23 = __swcpack_require__.bind(void 0, function(module, exports) {
 if (!global.window) global.window = global.document = global.requestAnimationFrame = undefined;
 var m = load22();
 var render = load23();
-var AppView = render.sync(m("span", "huhu"));
-export { AppView as AppView };
+render(m("span", "huhu")).then(function(html) {});
+var html = render.sync(m("span", "huhu"));
+module.exports = {
+    AppView: html
+};

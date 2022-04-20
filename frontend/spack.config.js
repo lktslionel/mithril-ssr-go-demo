@@ -3,12 +3,12 @@ const { config } = require('@swc/core/spack')
 
 module.exports = config({
     entry: {
-        'ssr': __dirname + '/src/index.js',
+        'render': __dirname + '/src/index.js',
     },
     output: {
-        path: __dirname + '/lib'
+        path: __dirname + '/../backend'
     },
     module: {
-        "type": "es6",
+        "type": "es5",
     },
 });
